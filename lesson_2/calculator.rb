@@ -1,11 +1,13 @@
+require "yaml"
+MESSAGES = YAML.load_file("calculator_messages.yml")
 
 def prompt(message)
   puts "=> #{message}"
-end 
+end
 
 def valid_number?(num)
-  num.to_i != 0
-end 
+  num.to_f.to_s == num || num.to_i.to_s == num
+end
 
 def operation_to_message(op)
   case op
@@ -17,46 +19,46 @@ def operation_to_message(op)
     "Multiplying"
   when "4"
     "Dividing"
-  end 
-end 
+  end
+end
 
-prompt("Welcome to Calculator! Enter your name")
+prompt(MESSAGES["welcome"])
 
 name = ""
-loop do 
+loop do
   name = gets.chomp
   if name.empty?
-    prompt("Make sure to use a valid name")
-  else 
-    break 
-  end 
-end 
+    prompt(MESSAGES["valid_name"])
+  else
+    break
+  end
+end
 
 prompt("Hi #{name}!")
 
-loop do 
+loop do
   first_number = ""
-  loop do 
-    prompt("Enter your first operand")
+  loop do
+    prompt(MESSAGES["first_operand"])
     first_number = gets.chomp
     if valid_number?(first_number)
       break
     else
-      prompt("Hmm.. that doesn't lok like a valid number")
-    end 
-  end 
+      prompt(MESSAGES["operand_error"])
+    end
+  end
 
   second_number = ""
-  loop do 
-    prompt("Enter your second operand")
+  loop do
+    prompt(MESSAGES["second_operand"])
     second_number = gets.chomp
     if valid_number?(second_number)
-      break 
-    else   
-      prompt("Hmm.. that doesn't look like a valid number")
-    end 
-  end 
-  
+      break
+    else
+      prompt(MESSAGES["operand_error"])
+    end
+  end
+
   operator_prompt = <<-MSG
     What operation would you like to perform?
     1) add
@@ -68,33 +70,33 @@ loop do
   prompt(operator_prompt)
   operator = ""
 
-  loop do 
+  loop do
     operator = gets.chomp
-    if %w(1 2 3 4).include?(operator) 
+    if %w(1 2 3 4).include?(operator)
       break
-    else  
-      prompt("Must choose 1 2 3 or 4")
-    end 
-  end 
+    else
+      prompt(MESSAGES["operator_error"])
+    end
+  end
 
   prompt("#{operation_to_message(operator)} the two numbers ...")
 
   result = case operator
            when "1"
-             result = first_number.to_i + second_number.to_i
+             first_number.to_i + second_number.to_i
            when "2"
-             result = first_number.to_i - second_number.to_i
+             first_number.to_i - second_number.to_i
            when "3"
-             result = first_number.to_i * second_number.to_i
+             first_number.to_i * second_number.to_i
            when "4"
-             result = first_number.to_f / second_number.to_f
+             first_number.to_f / second_number.to_f
            end
 
   prompt("The answer is #{result}")
 
-  prompt("Do you want to perform another calculation? (Y to calculate again)")
+  prompt(MESSAGES["perform_another"])
   answer = gets.chomp
   break unless answer.downcase.start_with?("y")
-end 
+end
 
-prompt("Thank you for using the calculator. Good bye!")
+prompt(MESSAGES["goodbye"])
