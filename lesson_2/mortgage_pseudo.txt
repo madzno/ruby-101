@@ -1,0 +1,24 @@
+#START
+# PRINT Greeting User and Ask for Name
+  # SET name = user's input
+  # Validate name
+#GET user's loan amount 
+  # SET loan_amount = user's input
+  # Validate user's input 
+# GET user's APR
+  # SET apr = user's input 
+  # Validate user's input
+  # SET apr_decimal = APR to decimal format of percentage
+  # SET monthly_interest = Convert APR to monthly interest rate
+# GET user's loan duration in years
+  # SET loan_years = user's input
+  # Validate user's input
+  # SET loan_months = loan duration in months
+# GET loan_months, monthly_interest, loan_amount 
+  # calculate monthly payment using formula m = p * (j / (1 - (1 + j)**(-n)))
+  # PRINT monthly payment amount to user 
+# GET if user wants to perform another cacluaor
+  # IF yes, loop to the start of the program
+  # ELSE break out
+# PRINT goodbye to user
+# END 
