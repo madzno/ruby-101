@@ -28,7 +28,7 @@ loop do
   loop do
     prompt(MESSAGES["loan_amount"])
     amount = gets.chomp
-    if validate_amount?(loan_amount) && loan_amount != "0"
+    if validate_amount?(amount) && amount != "0"
       break
     else
       puts prompt(MESSAGES["valid_number"])
