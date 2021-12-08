@@ -65,10 +65,13 @@ loop do
   amount = get_loan_amount(amount)
   apr = get_apr(apr)
   loan_years = get_loan_duration(loan_years)
+
   prompt(MESSAGES["calc_payment"])
+
   month_apr = ((apr.to_f) / 100) / 12
   loan_months = loan_years.to_i * 12
   payment = amount.to_i * (month_apr / (1 - (1 + month_apr)**(-loan_months)))
+
   prompt("Your monthly payment is #{format('%.2f', payment)} and your loan
           will be #{loan_months} months in total.")
   prompt(MESSAGES["another_calc"])
