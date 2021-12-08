@@ -9,43 +9,43 @@ def validate_amount?(num)
   num.to_i.to_s == num || num.to_f.to_s == num
 end
 
-def get_loan_amount(amount)
+def get_loan_amount(num_amount)
   loop do
     prompt(MESSAGES["loan_amount"])
-    amount = gets.chomp.delete("$").delete(",")
-    if validate_amount?(amount) && amount.to_i > 0
+    num_amount = gets.chomp.delete("$").delete(",")
+    if validate_amount?(num_amount) && num_amount.to_i > 0
       break
     else
       prompt(MESSAGES["valid_number"])
     end
   end
-  amount
+  num_amount
 end
 
-def get_apr(apr)
+def get_apr(percentage)
   loop do
     prompt(MESSAGES["apr"])
-    apr = gets.chomp
-    if validate_amount?(apr) && apr.to_i > 0
+    percentage = gets.chomp
+    if validate_amount?(percentage) && percentage.to_i > 0
       break
     else
       prompt(MESSAGES["valid_number"])
     end
   end
-  apr
+  percentage
 end
 
-def get_loan_duration(loan_years)
+def get_loan_duration(years)
   loop do
     prompt(MESSAGES["loan_duration"])
-    loan_years = gets.chomp
-    if validate_amount?(loan_years) && loan_years.to_i > 0
+    years = gets.chomp
+    if validate_amount?(years) && years.to_i > 0
       break
     else
       prompt(MESSAGES["valid_number"])
     end
   end
-  loan_years
+  years
 end
 
 name = ""
