@@ -45,10 +45,11 @@ def display_grand_winner(player_wins, _)
   end
 end
 
-player_total = 0
-computer_total = 0
+prompt("Welcome to Rock Paper Scissors Lizard Spock!")
 
 loop do
+  player_total = 0
+  computer_total = 0
   loop do
     choice = ""
     loop do
@@ -77,6 +78,8 @@ loop do
     else
       player_total += 0 && computer_total += 0
     end
+
+    prompt("Your total: #{player_total}. Computer total: #{computer_total}.")
 
     break if player_total == 3 || computer_total == 3
   end
