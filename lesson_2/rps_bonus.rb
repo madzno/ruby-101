@@ -18,37 +18,13 @@ def validate_choice?(players_choice)
   end
 end
 
-def rock_wins?(first, second)
-  (first == "rock" && second == "scissors") ||
-    (first == "rock" && second == "lizard")
-end
-
-def paper_wins?(first, second)
-  (first == "paper" && second == "rock") ||
-    (first == "paper" && second == "spock")
-end
-
-def lizard_wins?(first, second)
-  (first == "lizard" && second == "spock") ||
-    (first == "lizard" && second == "paper")
-end
-
-def spock_wins?(first, second)
-  (first == "spock" && second == "rock") ||
-    (first == "spock" && second == "scissors")
-end
-
-def scissors_wins?(first, second)
-  (first == "scissors" && second == "paper") ||
-    (first == "scissors" && second == "lizard")
-end
-
 def win?(first, second)
-  lizard_wins?(first, second) ||
-    rock_wins?(first, second) ||
-    spock_wins?(first, second) ||
-    scissors_wins?(first, second) ||
-    paper_wins?(first, second)
+  winner = { "rock" => ["lizard", "scissors"],
+             "paper" => ["rock", "spock"],
+             "lizard" => ["spock", "paper"],
+             "spock" => ["rock", "scissors"],
+             "scissors" => ["paper", "lizard"] }
+  (winner[first]).include?(second)
 end
 
 def display_result(player, computer)
