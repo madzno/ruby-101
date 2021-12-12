@@ -48,7 +48,7 @@ def win?(first, second)
   (WINNING_COMBOS[first]).include?(second)
 end
 
-def determine_round_winner(players_move, computers_move)
+def gets_round_winner(players_move, computers_move)
   if win?(players_move, computers_move)
     "player"
   elsif win?(computers_move, players_move)
@@ -70,7 +70,7 @@ def update_scores(winner, totals)
   if winner == "player"
     totals[:player] += 1
   elsif winner == "computer"
-    totals[:computer] +=1
+    totals[:computer] += 1
   end
 end
 
@@ -82,18 +82,15 @@ def display_grand_winner(player_wins, _)
   end
 end
 
-def get_play_again(users_input)
+def play_again?
+  users_input = ''
   loop do
     prompt("Want to play again? Type 'y / yes' if yes and 'n / no' if no")
     users_input = gets.chomp
-    if users_input.downcase == ("y" || "yes") ||
-       users_input.downcase == ("n" || "no")
-      break
-    else
-      prompt("Hmm.. that doesn't look like a valid choice")
-    end
+    break if ["y", "yes", "n", "no"].include?(users_input)
+    prompt("Hmm.. that doesn't look like a valid choice")
   end
-  users_input
+  ["y", "yes"].include?(users_input)
 end
 
 prompt("Welcome to Rock Paper Scissors Lizard Spock!")
@@ -110,7 +107,7 @@ loop do
     prompt("You chose #{VALID_NUMBERS[choice]}. "\
             "Computer chose #{computer_choice}.")
 
-    round_winner = determine_round_winner(VALID_NUMBERS[choice], computer_choice)
+    round_winner = gets_round_winner(VALID_NUMBERS[choice], computer_choice)
     display_result(round_winner)
 
     update_scores(round_winner, totals)
@@ -122,8 +119,7 @@ loop do
   end
   display_grand_winner(totals[:player], totals[:computer])
 
-  play_again = get_play_again(play_again)
-  break unless play_again == ("y" || "yes")
+  break unless play_again?
 end
 
 prompt("Thank you for playing! Goodbye")
