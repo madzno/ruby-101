@@ -48,17 +48,29 @@ def win?(first, second)
   (WINNING_COMBOS[first]).include?(second)
 end
 
-def win_for_display?(players_move, computers_move)
-  win?(players_move, computers_move)
+def determine_round_winner(players_move, computers_move)
+  if win?(players_move, computers_move)
+    "player"
+  elsif win?(computers_move, players_move)
+    "computer"
+  end
 end
 
-def display_result(player, computer)
-  if win_for_display?(player, computer)
+def display_result(winner)
+  if winner == "player"
     prompt("You won!")
-  elsif win_for_display?(computer, player)
+  elsif winner == "computer"
     prompt("Computer won!")
   else
     prompt("It's a tie!")
+  end
+end
+
+def update_scores(winner, totals)
+  if winner == "player"
+    totals[:player] += 1
+  elsif winner == "computer"
+    totals[:computer] +=1
   end
 end
 
@@ -98,14 +110,10 @@ loop do
     prompt("You chose #{VALID_NUMBERS[choice]}. "\
             "Computer chose #{computer_choice}.")
 
-    display_result(VALID_NUMBERS[choice], computer_choice)
+    round_winner = determine_round_winner(VALID_NUMBERS[choice], computer_choice)
+    display_result(round_winner)
 
-    if win?(VALID_NUMBERS[choice], computer_choice)
-      totals[:player] += 1
-    elsif win?(computer_choice, VALID_NUMBERS[choice])
-      totals[:computer] += 1
-    end
-
+    update_scores(round_winner, totals)
     prompt("Your total: #{totals[:player]}. "\
              "Computer total: #{totals[:computer]}.")
 
