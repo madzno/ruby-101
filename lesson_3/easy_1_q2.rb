@@ -9,7 +9,8 @@
 # a boolean object.
 #2. "!", when used before an object, turns that object to its boolean opposite. For example, !true == false
 #3. "!", when used after a method often, but not always, indicates that the method is destructive and will mutate its caller (not part of ruby syntax)
-#4. "?", when used before an object
+#4. "? :" is the ternary operator.  The expression to the left of the "?" is evaluated to a boolean object and then the object to the left of ":"
+# is returned if the expression evaluates to "true" and the object to the right of the ":" is returned if the expression evaluates to "false"
 #5. "?" when used after a method often, but not always, indicates that the method will return a boolean object (not part of ruby syntax)
 #6."!!" when used before an object turns that object into its boolean equivilent. For example, all objects in ruby are "truthy" except for
-# false and nil so !!5 == true
+# false and nil so !!5 will return true
