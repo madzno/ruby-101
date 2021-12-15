@@ -17,4 +17,6 @@ mess_with_demographics(munsters)
 
 # yes the family's data did get changed. The Hash#[]= is a setter method
 # and destructively adds 42 to all of the ages in the munsters hash
-# and all of the geners to "other"
+# and all of the geners to "other". Also the parameter "demo_hash" is not re-assigned within the method
+# so it points directly at the munsters hash when the munsters hash is passed into the method
+# and thus the munsters hash itself is affected
