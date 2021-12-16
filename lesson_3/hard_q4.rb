@@ -9,4 +9,19 @@ def dot_separated_ip_address?(input_string)
   true
 end
 
+def valid_numbers?(input_string)
+  input_string.to_i <= 225 && input_string.to_i >= 0
+end
 
+
+def is_an_ip_number?(string_of_numbers)
+  split_numbers = string_of_numbers.split(".")
+  return false if split_numbers.length != 4
+  while split_numbers.length > 0
+    word = split_numbers.pop
+    return false unless valid_numbers?(word)
+  end
+  true
+end
+
+p is_an_ip_number?("0.225.65.2")
