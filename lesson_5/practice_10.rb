@@ -12,5 +12,7 @@ end
 # need to create a new incremented hash variable and then return this
 # after each since each returns the original collection
 
-
+# can't use hash assignment on the sub_hashes because hash assignment
+# has the side effect of *mutating* the original collection and we don't
+# want to do that
 
