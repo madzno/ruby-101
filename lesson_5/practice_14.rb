@@ -5,3 +5,16 @@ hsh = {
   'apricot' => {type: 'fruit', colors: ['orange'], size: 'medium'},
   'marrow' => {type: 'vegetable', colors: ['green'], size: 'large'},
 }
+
+return_value = hsh.map do |key, value|
+                 if value[:type] == 'fruit'
+                   value[:colors].map do |color|
+                     color.capitalize
+                   end
+                 elsif value[:type] == 'vegetable'
+                   value[:size].upcase
+                 end
+              end
+
+p return_value
+
