@@ -54,10 +54,21 @@ def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITAL_MARKER }
 end
 
+def joinor(arr, symbol = ', ', word = 'or')
+  case arr.size
+  when 0 then ' '
+  when 1 then arr.first
+  when 2 then arr.join(" #{word} ")
+  else
+    arr[-1] = "#{word} #{arr.last}"
+    arr.join(symbol)
+  end
+end
+
 def player_places_piece!(brd)
   square = ''
   loop do
-    prompt("Choose a square (#{empty_squares(brd).join(', ')}):")
+    prompt("Choose a square (#{joinor(empty_squares(brd))}):")
     square = gets.chomp.to_i
     if empty_squares(brd).include?(square)
       break
@@ -120,3 +131,5 @@ loop do
 end
 
 prompt("Thanks for playing tic-tac-toe, Goodbye!")
+
+
