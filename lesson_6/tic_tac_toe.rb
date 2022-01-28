@@ -14,13 +14,20 @@ INITAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
 
+WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
+                [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
+                [[1, 5, 9], [3, 5, 7]]
+
+WINNING_NUMBER = 3
+
 def prompt(message)
   puts "=> #{message}"
 end
 
+# rubocop:disable Metrics/AbcSize
 def display_board(brd)
   system 'clear'
-  puts "You're a #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
+  puts "You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
   puts ""
   puts "     |     |     "
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]} "
@@ -35,15 +42,16 @@ def display_board(brd)
   puts "     |     |     "
   puts ""
 end
+# rubocop:enable Metrics/AbcSize
 
 def initalize_board
   new_board = {}
-  (1..9).each {|num| new_board[num] = INITAL_MARKER}
+  (1..9).each { |num| new_board[num] = INITAL_MARKER }
   new_board
 end
 
 def empty_squares(brd)
-  brd.keys.select{|num| brd[num] == INITAL_MARKER}
+  brd.keys.select { |num| brd[num] == INITAL_MARKER }
 end
 
 def player_places_piece!(brd)
@@ -75,25 +83,18 @@ def someone_won?(brd)
 end
 
 def detect_winner(brd)
-  winning_lines = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
-                  [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
-                  [[1, 5, 9], [3, 5, 7]]
-  winning_lines.each do |line|
-    if brd[line[0]] == PLAYER_MARKER &&
-       brd[line[1]] == PLAYER_MARKER &&
-       brd[line[2]] == PLAYER_MARKER
-       return 'Player'
-    elsif brd[line[0]] == COMPUTER_MARKER &&
-       brd[line[1]] == COMPUTER_MARKER &&
-       brd[line[2]] == COMPUTER_MARKER
-       return "Computer"
+  WINNING_LINES.each do |line|
+    if brd.values_at(*line).count(PLAYER_MARKER) == WINNING_NUMBER
+      return 'Player'
+    elsif brd.values_at(*line).count(COMPUTER_MARKER) == WINNING_NUMBER
+      return 'Computer'
     end
   end
   nil
 end
 
 loop do
-  board = initalize_board()
+  board = initalize_board
 
   loop do
     display_board(board)
