@@ -61,18 +61,14 @@ def joinor(arr, symbol = ', ', word = 'or')
 end
 
 def get_first_player
-
   choice = ''
-
   loop do
     prompt(" Who should move first? Type 'u' for user or 'c' for computer")
     choice = gets.chomp
-    break if choice == ('u' || 'c')
+    break if choice == 'u' || choice == 'c'
     prompt("Sorry, that's not a valid choice")
   end
-
   choice
-
   case choice
     when 'u' then 'user'
     when 'c' then 'computer'
@@ -198,10 +194,9 @@ puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
 loop do
   score = initalize_score
   first_player = get_first_player
+  board = initalize_board
 
   loop do
-
-    board = initalize_board
     loop do
       display_board(board)
 
@@ -222,7 +217,6 @@ loop do
     display_score(score)
 
     break if ultimate_winner?(score)
-
   end
 
   display_ultimate_winner(score)
