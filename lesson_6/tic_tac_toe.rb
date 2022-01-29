@@ -84,10 +84,6 @@ def board_full?(brd)
   empty_squares(brd).empty?
 end
 
-def round_won?(brd)
-  !!detect_round_winner(brd)
-end
-
 def detect_round_winner(brd)
   WINNING_LINES.each do |line|
     if brd.values_at(*line).count(PLAYER_MARKER) == WINNING_NUMBER
@@ -97,6 +93,10 @@ def detect_round_winner(brd)
     end
   end
   nil
+end
+
+def round_won?(brd)
+  !!detect_round_winner(brd)
 end
 
 def display_round_winner(board)
@@ -131,21 +131,26 @@ def display_ultimate_winner(score)
   end
 end
 
+def play_again?
+  prompt("Play again? (y or n)")
+  answer = gets.chomp
+  return true if answer.start_with?('y')
+end
+
 #welcome messages
-puts "Welcome to tic-tac-toe"
+puts "Welcome to tic-tac-toe!"
 puts "You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
 puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
 
+# main loop
 loop do
   score = initalize_score
 
-
-  # 5 round game loop
   loop do
 
     board = initalize_board
 
-  #individual round
+    #individual round loop
     loop do
       display_board(board)
 
@@ -165,12 +170,9 @@ loop do
 
   display_ultimate_winner(score)
 
-  prompt("Play again? (y or n)")
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  break unless play_again?
 end
 
-
-# prompt("Thanks for playing tic-tac-toe, Goodbye!")
+prompt("Thanks for playing tic-tac-toe, Goodbye!")
 
 
