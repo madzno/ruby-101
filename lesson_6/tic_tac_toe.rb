@@ -60,6 +60,25 @@ def joinor(arr, symbol = ', ', word = 'or')
   end
 end
 
+def get_first_player
+
+  choice = ''
+
+  loop do
+    prompt(" Who should move first? Type 'u' for user or 'c' for computer")
+    choice = gets.chomp
+    break if choice == ('u' || 'c')
+    prompt("Sorry, that's not a valid choice")
+  end
+
+  choice
+
+  case choice
+    when 'u' then 'user'
+    when 'c' then 'computer'
+  end
+end
+
 def player_places_piece!(brd)
   square = ''
   loop do
@@ -75,8 +94,41 @@ def player_places_piece!(brd)
   brd[square] = PLAYER_MARKER
 end
 
+def find_at_risk_square(line, brd, marker)
+  if brd.values_at(*line).count(marker) == 2
+    brd.select{|k, v| line.include?(k) && v == INITAL_MARKER}.keys.first
+  else
+    nil
+  end
+end
+
 def computer_places_piece!(brd)
-  square = empty_squares(brd).sample
+  square = nil
+
+  #offense
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+      break if square
+    end
+
+  # defense
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
+      break if square
+    end
+  end
+
+  # square 5
+  if !square && brd[5] == INITAL_MARKER
+    square = 5
+  end
+
+  #random
+  if !square
+    square = empty_squares(brd).sample
+  end
+
   brd[square] = COMPUTER_MARKER
 end
 
@@ -145,24 +197,29 @@ puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
 # main loop
 loop do
   score = initalize_score
+  first_player = get_first_player
 
   loop do
 
     board = initalize_board
-
-    #individual round loop
     loop do
       display_board(board)
 
-      player_places_piece!(board)
-      computer_places_piece!(board)
+      if first_player == 'user'
+        player_places_piece!(board)
+        computer_places_piece!(board)
+      elsif first_player == 'computer'
+        computer_places_piece!(board)
+        player_places_piece!(board)
+      end
 
       update_score(detect_round_winner(board), score)
-      display_round_winner(board)
-      display_score(score)
 
       break if round_won?(board) || board_full?(board)
     end
+
+    display_round_winner(board)
+    display_score(score)
 
     break if ultimate_winner?(score)
 
