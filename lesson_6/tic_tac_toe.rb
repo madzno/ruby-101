@@ -1,14 +1,4 @@
-# Tic Tact Toe
-# 1. Display the inital 3x3 board
-# 2. Ask the user to mark a square.
-# 3. Computer marks a square
-# 4. Display the updated board state
-# 5. If winner, display winner.
-# 6. If board is full, display tie.
-# 7. If neither winner nor board is full, go to number 2
-# 8. Play again?
-# 9. If yes, go to 1
-# 10. Good bye!
+require 'pry'
 
 INITAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -28,9 +18,7 @@ end
 
 # rubocop:disable Metrics/AbcSize
 def display_board(brd)
-  system 'clear'
-  puts "You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
-  puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
+  #system 'clear'
   puts ""
   puts "     |     |     "
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]} "
@@ -46,6 +34,10 @@ def display_board(brd)
   puts ""
 end
 # rubocop:enable Metrics/AbcSize
+
+def initalize_score
+  score_board = { player: 0, computer: 0}
+end
 
 def initalize_board
   new_board = {}
@@ -92,11 +84,11 @@ def board_full?(brd)
   empty_squares(brd).empty?
 end
 
-def someone_won?(brd)
-  !!detect_ultimate_winner(brd)
+def round_won?(brd)
+  !!detect_round_winner(brd)
 end
 
-def detect_winner(brd)
+def detect_round_winner(brd)
   WINNING_LINES.each do |line|
     if brd.values_at(*line).count(PLAYER_MARKER) == WINNING_NUMBER
       return 'Player'
@@ -107,54 +99,78 @@ def detect_winner(brd)
   nil
 end
 
-def update_score(brd, score)
-  if detect_winner(brd) == 'Player'
-    score[:player] += 1
-  else detect_winner(brd) == "Computer"
-    score[:computer] += 1
-  end
-  nil
-end
-
-def display_score(score)
-  puts "Players score is #{score[:player]}, Computers score is #{score[:player]}"
-end
-
-def detect_ultimate_winner(score)
-  if score[:player] == 5
-    return "Player"
-  else score[:computer] == 5
-    return "Computer"
-  end
-  nil
-end
-
-loop do
-  board = initalize_board
-  score = { player: 0, computer: 0}
-
-  loop do
-    display_board(board)
-    player_places_piece!(board)
-    computer_places_piece!(board)
-    update_score(board, score)
-    display_score(score)
-    break if someone_won?(board) || board_full?(board)
-  end
-
-  display_board(board)
-
-  if someone_won?(board)
-    prompt("#{detect_winner(board)} won!")
+def display_round_winner(board)
+  if round_won?(board)
+    prompt("#{detect_round_winner(board)} won!")
   else
     prompt("It's a tie!")
   end
+end
+
+def update_score(winner, score)
+  if winner == 'Player'
+    score[:player] += 1
+  elsif winner == 'Computer'
+    score[:computer] += 1
+  end
+end
+
+def display_score(score)
+   puts "Players score is #{score[:player]}, Computers score is #{score[:computer]}"
+ end
+
+def ultimate_winner?(score)
+  score[:player] == 5 || score[:computer] == 5
+end
+
+def display_ultimate_winner(score)
+  if score[:player] == 5
+    puts "Player is the ultimate winner!"
+  elsif score[:computer] == 5
+    puts "Computer is the ultimate winner!"
+  end
+end
+
+#welcome messages
+puts "Welcome to tic-tac-toe"
+puts "You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
+puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
+
+loop do
+  score = initalize_score
+
+
+  # 5 round game loop
+  loop do
+
+    board = initalize_board
+
+  #individual round
+    loop do
+      display_board(board)
+
+      player_places_piece!(board)
+      computer_places_piece!(board)
+
+      update_score(detect_round_winner(board), score)
+      display_round_winner(board)
+      display_score(score)
+
+      break if round_won?(board) || board_full?(board)
+    end
+
+    break if ultimate_winner?(score)
+
+  end
+
+  display_ultimate_winner(score)
 
   prompt("Play again? (y or n)")
   answer = gets.chomp
   break unless answer.downcase.start_with?('y')
 end
 
-prompt("Thanks for playing tic-tac-toe, Goodbye!")
+
+# prompt("Thanks for playing tic-tac-toe, Goodbye!")
 
 
