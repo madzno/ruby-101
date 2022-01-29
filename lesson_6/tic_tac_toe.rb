@@ -20,6 +20,8 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
 
 WINNING_NUMBER = 3
 
+WINNING_SCORE = 5
+
 def prompt(message)
   puts "=> #{message}"
 end
@@ -28,6 +30,7 @@ end
 def display_board(brd)
   system 'clear'
   puts "You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
+  puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
   puts ""
   puts "     |     |     "
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]} "
@@ -90,7 +93,7 @@ def board_full?(brd)
 end
 
 def someone_won?(brd)
-  !!detect_winner(brd)
+  !!detect_ultimate_winner(brd)
 end
 
 def detect_winner(brd)
@@ -104,16 +107,38 @@ def detect_winner(brd)
   nil
 end
 
+def update_score(brd, score)
+  if detect_winner(brd) == 'Player'
+    score[:player] += 1
+  else detect_winner(brd) == "Computer"
+    score[:computer] += 1
+  end
+  nil
+end
+
+def display_score(score)
+  puts "Players score is #{score[:player]}, Computers score is #{score[:player]}"
+end
+
+def detect_ultimate_winner(score)
+  if score[:player] == 5
+    return "Player"
+  else score[:computer] == 5
+    return "Computer"
+  end
+  nil
+end
+
 loop do
   board = initalize_board
+  score = { player: 0, computer: 0}
 
   loop do
     display_board(board)
-
     player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
-
     computer_places_piece!(board)
+    update_score(board, score)
+    display_score(score)
     break if someone_won?(board) || board_full?(board)
   end
 
