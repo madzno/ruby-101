@@ -1,0 +1,8 @@
+move_first: "Who should move first? Type 'u' for user or 'c' for computer"
+valid_choice: "Sorry, that's not a valid choice"
+tie: "It's a tie!"
+player_ultimate_winner: "Player is the ultimate winner!"
+computer_ultimate_winner: "Computer is the ultimate winner!"
+play_again: "Play again? (y or n)"
+welcome: "Welcome to tic-tac-toe!"
+good_bye: "Thanks for playing tic-tac-toe, Goodbye!"

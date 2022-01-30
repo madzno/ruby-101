@@ -1,4 +1,8 @@
-require 'pry'
+#imports
+require 'yaml'
+
+#constants
+MESSAGES = YAML.load_file('tictactoe_messages.yml')
 
 INITAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -12,6 +16,7 @@ WINNING_NUMBER = 3
 
 WINNING_SCORE = 5
 
+#methods
 def prompt(message)
   puts "=> #{message}"
 end
@@ -63,10 +68,10 @@ end
 def get_first_player
   choice = ''
   loop do
-    prompt("Who should move first? Type 'u' for user or 'c' for computer")
+    prompt(MESSAGES['move_first'])
     choice = gets.chomp
     break if choice == 'u' || choice == 'c'
-    prompt("Sorry, that's not a valid choice")
+    prompt(MESSAGES['valid_choice'])
   end
   choice
   case choice
@@ -83,7 +88,7 @@ def player_places_piece!(brd)
     if empty_squares(brd).include?(square)
       break
     else
-      prompt("Sorry, that's not a valid input")
+      prompt(MESSAGES['valid_choice'])
     end
   end
 
@@ -155,7 +160,7 @@ def display_round_winner(board)
   if round_won?(board)
     prompt("#{detect_round_winner(board)} won!")
   else
-    prompt("It's a tie!")
+    prompt(MESSAGES{'tie'})
   end
 end
 
@@ -177,27 +182,28 @@ end
 
 def display_ultimate_winner(score)
   if score[:player] == 5
-    puts "Player is the ultimate winner!"
+    prompt(MESSAGES['player_ultimate_winner'])
   elsif score[:computer] == 5
-    puts "Computer is the ultimate winner!"
+    prompt(MESSAGES['computer_ultimate_winner'])
   end
 end
 
 def play_again?
-  prompt("Play again? (y or n)")
+  prompt(MESSAGES['play_again'])
   answer = gets.chomp
   return true if answer.start_with?('y')
 end
 
 #welcome messages
-puts "Welcome to tic-tac-toe!"
-puts "You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}."
-puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
+prompt(MESSAGES['welcome'])
+prompt("You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}.")
+prompt("First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!")
 
 # main loop
 loop do
   score = initalize_score
   first_player = get_first_player
+  system 'clear'
   # round of 5 games
   loop do
     board = initalize_board
@@ -230,6 +236,6 @@ loop do
   break unless play_again?
 end
 
-prompt("Thanks for playing tic-tac-toe, Goodbye!")
+prompt(MESSAGES['good_bye'])
 
 
