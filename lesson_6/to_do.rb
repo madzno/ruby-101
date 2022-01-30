@@ -6,6 +6,8 @@
 because of string interpolation, use example from lesson 2 on
 how to trim down line to 80 columns
 - Rubocop and then always test code after changing things with rubocop
-- add ! suffix to computer places piece
 - need a way to alternate players
+- simplify computer move method
+- problem when selecting computer, computer doesn't place piece first - has to do with displaying board
+- can you pause the program in between display board and the break condition?
 =end

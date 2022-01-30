@@ -63,7 +63,7 @@ end
 def get_first_player
   choice = ''
   loop do
-    prompt(" Who should move first? Type 'u' for user or 'c' for computer")
+    prompt("Who should move first? Type 'u' for user or 'c' for computer")
     choice = gets.chomp
     break if choice == 'u' || choice == 'c'
     prompt("Sorry, that's not a valid choice")
@@ -147,6 +147,10 @@ def round_won?(brd)
   !!detect_round_winner(brd)
 end
 
+def round_over?(brd)
+  round_won?(brd) || board_full?(brd)
+end
+
 def display_round_winner(board)
   if round_won?(board)
     prompt("#{detect_round_winner(board)} won!")
@@ -194,25 +198,27 @@ puts "First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!"
 loop do
   score = initalize_score
   first_player = get_first_player
-  board = initalize_board
-
+  # round of 5 games
   loop do
+    board = initalize_board
+    # each round
     loop do
-      display_board(board)
 
       if first_player == 'user'
+        display_board(board)
         player_places_piece!(board)
         computer_places_piece!(board)
+        break if round_over?(board)
       elsif first_player == 'computer'
         computer_places_piece!(board)
+        display_board(board)
+        break if round_over?(board)
         player_places_piece!(board)
       end
 
-      update_score(detect_round_winner(board), score)
-
-      break if round_won?(board) || board_full?(board)
     end
 
+    update_score(detect_round_winner(board), score)
     display_round_winner(board)
     display_score(score)
 
