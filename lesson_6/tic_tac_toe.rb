@@ -100,35 +100,39 @@ def find_at_risk_square(line, brd, marker)
   if brd.values_at(*line).count(marker) == 2
     brd.select { |k, v| line.include?(k) && v == INITAL_MARKER }.keys.first
   end
+  nil
 end
 
-def computer_places_piece!(brd)
-  square = nil
+def choose_random_square(brd)
+  empty_squares(brd).sample
+end
 
-  # offense
+def computer_offense(brd)
   WINNING_LINES.each do |line|
     square = find_at_risk_square(line, brd, COMPUTER_MARKER)
     break if square
   end
+  nil
+end
 
-  # defense
-  if !square
-    WINNING_LINES.each do |line|
-      square = find_at_risk_square(line, brd, PLAYER_MARKER)
-      break if square
-    end
+def computer_defense(brd)
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, PLAYER_MARKER)
+    break if square
   end
+  nil
+end
 
-  # square 5
-  if !square && brd[INITAL_SQUARE] == INITAL_MARKER
-    square = INITAL_SQUARE
-  end
-
-  # random
-  if !square
-    square = empty_squares(brd).sample
-  end
-
+def computer_places_piece!(brd)
+  square = if computer_offense(brd)
+             computer_offense(brd)
+           elsif computer_defense(brd)
+             computer_defense(brd)
+           elsif brd[INITAL_SQUARE] == INITAL_MARKER
+             INITAL_SQUARE
+           else
+             choose_random_square(brd)
+           end
   brd[square] = COMPUTER_MARKER
 end
 

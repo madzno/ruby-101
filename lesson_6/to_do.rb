@@ -1,13 +1,29 @@
-=begin
+def computer_places_piece!(brd)
+  square = nil
 
--Messages YAML file
--clear screen - where to put it
-- for prompts that can't go to a YAML file
-because of string interpolation, use example from lesson 2 on
-how to trim down line to 80 columns
-- Rubocop and then always test code after changing things with rubocop
-- need a way to alternate players
-- simplify computer move method
-- problem when selecting computer, computer doesn't place piece first - has to do with displaying board
-- can you pause the program in between display board and the break condition?
-=end
+  # offense
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
+  end
+
+  # defense
+  if !square
+    WINNING_LINES.each do |line|
+      square = find_at_risk_square(line, brd, PLAYER_MARKER)
+      break if square
+    end
+  end
+
+  # square 5
+  if !square && brd[INITAL_SQUARE] == INITAL_MARKER
+    square = INITAL_SQUARE
+  end
+
+  # random
+  if !square
+    square = choose_random_square(brd)
+  end
+
+  brd[square] = COMPUTER_MARKER
+end
