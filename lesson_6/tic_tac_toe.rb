@@ -7,6 +7,7 @@ MESSAGES = YAML.load_file('tictactoe_messages.yml')
 INITAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
+INITAL_SQUARE = 5
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
@@ -14,7 +15,7 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
 
 WINNING_NUMBER = 3
 
-WINNING_SCORE = 5
+MAX_SCORE = 5
 
 #methods
 def prompt(message)
@@ -23,7 +24,7 @@ end
 
 # rubocop:disable Metrics/AbcSize
 def display_board(brd)
-  #system 'clear'
+  system 'clear'
   puts ""
   puts "     |     |     "
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]} "
@@ -121,8 +122,8 @@ def computer_places_piece!(brd)
   end
 
   # square 5
-  if !square && brd[5] == INITAL_MARKER
-    square = 5
+  if !square && brd[INITAL_SQUARE] == INITAL_MARKER
+    square = INITAL_SQUARE
   end
 
   #random
@@ -156,6 +157,22 @@ def round_over?(brd)
   round_won?(brd) || board_full?(brd)
 end
 
+def play_game!(board, first_player)
+  loop do
+    if first_player == 'user'
+      display_board(board)
+      player_places_piece!(board)
+      computer_places_piece!(board)
+      break if round_over?(board)
+    elsif first_player == 'computer'
+      computer_places_piece!(board)
+      display_board(board)
+      break if round_over?(board)
+      player_places_piece!(board)
+    end
+  end
+end
+
 def display_round_winner(board)
   if round_won?(board)
     prompt("#{detect_round_winner(board)} won!")
@@ -177,13 +194,13 @@ def display_score(score)
  end
 
 def ultimate_winner?(score)
-  score[:player] == 5 || score[:computer] == 5
+  score[:player] == MAX_SCORE || score[:computer] == MAX_SCORE
 end
 
 def display_ultimate_winner(score)
-  if score[:player] == 5
+  if score[:player] == MAX_SCORE
     prompt(MESSAGES['player_ultimate_winner'])
-  elsif score[:computer] == 5
+  elsif score[:computer] == MAX_SCORE
     prompt(MESSAGES['computer_ultimate_winner'])
   end
 end
@@ -197,35 +214,26 @@ end
 #welcome messages
 prompt(MESSAGES['welcome'])
 prompt("You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}.")
-prompt("First player to win #{WINNING_SCORE} rounds is the Ultimate Winner!")
+prompt("First player to win #{MAX_SCORE} rounds is the Ultimate Winner!")
 
 # main loop
 loop do
   score = initalize_score
   first_player = get_first_player
   system 'clear'
+
   # round of 5 games
   loop do
     board = initalize_board
-    # each round
-    loop do
 
-      if first_player == 'user'
-        display_board(board)
-        player_places_piece!(board)
-        computer_places_piece!(board)
-        break if round_over?(board)
-      elsif first_player == 'computer'
-        computer_places_piece!(board)
-        display_board(board)
-        break if round_over?(board)
-        player_places_piece!(board)
-      end
+    sleep(1)
 
-    end
+    play_game!(board, first_player)
 
     update_score(detect_round_winner(board), score)
+
     display_round_winner(board)
+
     display_score(score)
 
     break if ultimate_winner?(score)
@@ -237,5 +245,3 @@ loop do
 end
 
 prompt(MESSAGES['good_bye'])
-
-
