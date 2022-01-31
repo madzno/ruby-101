@@ -1,7 +1,7 @@
-#imports
+# imports
 require 'yaml'
 
-#constants
+# constants
 MESSAGES = YAML.load_file('tictactoe_messages.yml')
 
 INITAL_MARKER = ' '
@@ -17,7 +17,7 @@ WINNING_NUMBER = 3
 
 MAX_SCORE = 5
 
-#methods
+# methods
 def prompt(message)
   puts "=> #{message}"
 end
@@ -42,7 +42,7 @@ end
 # rubocop:enable Metrics/AbcSize
 
 def initalize_score
-  score_board = { player: 0, computer: 0}
+  { player: 0, computer: 0 }
 end
 
 def initalize_board
@@ -66,7 +66,7 @@ def joinor(arr, symbol = ', ', word = 'or')
   end
 end
 
-def get_first_player
+def choose_first_player
   choice = ''
   loop do
     prompt(MESSAGES['move_first'])
@@ -74,10 +74,10 @@ def get_first_player
     break if choice == 'u' || choice == 'c'
     prompt(MESSAGES['valid_choice'])
   end
-  choice
+
   case choice
-    when 'u' then 'user'
-    when 'c' then 'computer'
+  when 'u' then 'user'
+  when 'c' then 'computer'
   end
 end
 
@@ -98,20 +98,18 @@ end
 
 def find_at_risk_square(line, brd, marker)
   if brd.values_at(*line).count(marker) == 2
-    brd.select{|k, v| line.include?(k) && v == INITAL_MARKER}.keys.first
-  else
-    nil
+    brd.select { |k, v| line.include?(k) && v == INITAL_MARKER }.keys.first
   end
 end
 
 def computer_places_piece!(brd)
   square = nil
 
-  #offense
-    WINNING_LINES.each do |line|
-      square = find_at_risk_square(line, brd, COMPUTER_MARKER)
-      break if square
-    end
+  # offense
+  WINNING_LINES.each do |line|
+    square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
+  end
 
   # defense
   if !square
@@ -126,7 +124,7 @@ def computer_places_piece!(brd)
     square = INITAL_SQUARE
   end
 
-  #random
+  # random
   if !square
     square = empty_squares(brd).sample
   end
@@ -177,7 +175,7 @@ def display_round_winner(board)
   if round_won?(board)
     prompt("#{detect_round_winner(board)} won!")
   else
-    prompt(MESSAGES{'tie'})
+    prompt(MESSAGES['tie'])
   end
 end
 
@@ -190,8 +188,9 @@ def update_score(winner, score)
 end
 
 def display_score(score)
-   puts "Players score is #{score[:player]}, Computers score is #{score[:computer]}"
- end
+  prompt("Players score is #{score[:player]}. "\
+         "Computers score is #{score[:computer]}")
+end
 
 def ultimate_winner?(score)
   score[:player] == MAX_SCORE || score[:computer] == MAX_SCORE
@@ -211,7 +210,7 @@ def play_again?
   return true if answer.start_with?('y')
 end
 
-#welcome messages
+# welcome messages
 prompt(MESSAGES['welcome'])
 prompt("You're #{PLAYER_MARKER}. Computer is #{COMPUTER_MARKER}.")
 prompt("First player to win #{MAX_SCORE} rounds is the Ultimate Winner!")
@@ -219,7 +218,7 @@ prompt("First player to win #{MAX_SCORE} rounds is the Ultimate Winner!")
 # main loop
 loop do
   score = initalize_score
-  first_player = get_first_player
+  first_player = choose_first_player
   system 'clear'
 
   # round of 5 games
