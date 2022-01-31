@@ -1,6 +1,5 @@
 # imports
 require 'yaml'
-require 'pry'
 
 # constants
 MESSAGES = YAML.load_file('tictactoe_messages.yml')
@@ -100,8 +99,6 @@ end
 def find_at_risk_square(line, brd, marker)
   if brd.values_at(*line).count(marker) == 2
     brd.select { |k, v| line.include?(k) && v == INITAL_MARKER }.keys.first
-  else
-    nil
   end
 end
 
@@ -109,42 +106,35 @@ def choose_random_square(brd)
   empty_squares(brd).sample
 end
 
-def computer_offense(brd, square)
+def computer_offense(brd)
+  square = nil
   WINNING_LINES.each do |line|
     square = find_at_risk_square(line, brd, COMPUTER_MARKER)
+    break if square
   end
   square
 end
 
-def computer_defense(brd, square)
+def computer_defense(brd)
+  square = nil
   WINNING_LINES.each do |line|
     square = find_at_risk_square(line, brd, PLAYER_MARKER)
+    break if square
   end
   square
 end
 
 def computer_places_piece!(brd)
-  square = nil
-  if computer_offense(brd, square)
-    square = computer_offense(brd, square)
-  elsif computer_defense(brd, square)
-    square = computer_defense(brd, square)
-  elsif brd[INITAL_SQUARE] == INITAL_MARKER
-    square = INITAL_SQUARE
-  else
-    square = choose_random_square(brd)
-  end
-  # square = if computer_offense(brd)
-  #            computer_offense(brd)
-  #          elsif computer_defense(brd)
-  #            computer_defense(brd)
-  #          elsif brd[INITAL_SQUARE] == INITAL_MARKER
-  #            INITAL_SQUARE
-  #          else
-  #            choose_random_square(brd)
-  #          end
+  square = if computer_offense(brd)
+             computer_offense(brd)
+           elsif computer_defense(brd)
+             computer_defense(brd)
+           elsif brd[INITAL_SQUARE] == INITAL_MARKER
+             INITAL_SQUARE
+           else
+             choose_random_square(brd)
+           end
   brd[square] = COMPUTER_MARKER
-  binding.pry
 end
 
 def board_full?(brd)
