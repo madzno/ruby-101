@@ -1,4 +1,5 @@
 # imports
+require 'pry'
 
 # constants
 
@@ -9,6 +10,9 @@ VALUES_DISPLAY_NAMES = {  'J' => 'Jack',
                           'Q' => 'Queen',
                           'K' => 'King',
                           'A' => 'Ace'}
+
+PLAYERS_KEY = :player
+DEALERS_KEY = :dealer
 # methods
 
 def prompt(message)
@@ -17,6 +21,10 @@ end
 
 def initalize_deck
   SUITS.product(VALUES).shuffle
+end
+
+def initalize_totals
+  { PLAYERS_KEY => 0, DEALERS_KEY => 0 }
 end
 
 def welcome_messages
@@ -36,13 +44,20 @@ def welcome_messages
   system 'clear'
 end
 
-def deal_cards(deck)
+def deal_cards!(deck)
   cards = []
   2.times do |card|
     card = deck.sample
     cards << card
+    deck.delete(card)
   end
   cards
+end
+
+def get_random_card!(deck)
+  card = deck.sample
+  deck.delete(card)
+  card
 end
 
 def display_dealers_card(dealers_cards)
@@ -69,45 +84,83 @@ def display_players_cards(players_cards)
   prompt("You have: #{card_one_display} and #{card_two_display}")
 end
 
-def total(deck)
-  values = deck.map { |sub_array| sub_array[1] }
-
-  sum = 0
+def inital_total!(cards, current_player_key, totals)
+  values = cards.map { |sub_array| sub_array[1] }
 
   values.each do |value|
     if value == "A"
-      sum += 11
+      totals[current_player_key] += 11
     elsif value.to_i == 0
-      sum += 10
+      totals[current_player_key] += 10
     else
-      sum += value.to_i
+      totals[current_player_key] += value.to_i
     end
   end
 
   values.select { |value| value == 'A'}.count.times do |sum|
-    sum -= 10 if sum > 21
+    totals[current_player_key] -= 10 if totals[current_player_key] > 21
+  end
+
+  totals[current_player_key]
+end
+
+def update_total!(card, current_player_key, totals)
+  value = card[1]
+
+  if value == 'A' && totals[current_player_key] > 21
+    totals[current_player_key] += 1
+  elsif value == 'A' && totals[current_player_key] <= 21
+    totals[current_player_key] += 11
+  elsif value.to_i == 0
+    totals[current_player_key] += 10
+  else
+    totals[current_player_key] += value.to_i
   end
 end
 
-def players_turn
-  choice = ''
+def players_turn(deck, totals)
   loop do
     prompt("Choose: 'hit' or 'stay'")
     answer = gets.chomp
-    if answer == 'stay' || busted?
+    if answer == 'hit'
+       totals[PLAYERS_KEY] = hit(deck, totals)
+    elsif answer == 'stay' || busted?
       break
     elsif answer != ('hit' || 'stay')
       prompt("Sorry, not a valid choice please enter 'hit' or 'stay'")
     end
   end
-  choice
+  totals[PLAYERS_KEY]
 end
 
-def busted?(players_total)
+def hit(deck, totals)
+  card = get_random_card!(deck)
+  update_total!(card, PLAYERS_KEY, totals)
+  p card
+  p totals
+end
 
+
+totals = initalize_totals
 deck = initalize_deck
-players_cards = deal_cards(deck)
-dealers_cards = deal_cards(deck)
+
+players_cards = deal_cards!(deck)
+dealers_cards = deal_cards!(deck)
+
 display_dealers_card(dealers_cards)
 display_players_cards(players_cards)
-players_turn
+
+players_starting_total = inital_total!(players_cards, PLAYERS_KEY, totals)
+dealers_starting_total = inital_total!(dealers_cards, DEALERS_KEY, totals)
+
+p players_cards
+p players_starting_total
+
+p dealers_cards
+p dealers_starting_total
+
+p totals
+
+players_turn(deck, totals)
+
+p totals
