@@ -104,6 +104,7 @@ def players_turn
 end
 
 def busted?(players_total)
+
 deck = initalize_deck
 players_cards = deal_cards(deck)
 dealers_cards = deal_cards(deck)
