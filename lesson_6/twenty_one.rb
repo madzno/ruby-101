@@ -102,9 +102,7 @@ def inital_total!(cards, current_player_key, totals)
   totals[current_player_key]
 end
 
-def hit!(deck, current_player_key, totals)
-  card = deck.pop
-  p card
+def update_total!(card, current_player_key, totals)
   if card[1] == 'A' && totals[current_player_key] > 21
     totals[current_player_key] += 1
   elsif card[1] == 'A' && totals[current_player_key] <= 21
@@ -123,20 +121,13 @@ def busted?(totals)
 end
 
 totals = initalize_totals
-deck = initalize_deck
-
-# players_cards = deal_cards!(deck)
-# dealers_cards = deal_cards!(deck)
-
-# display_dealers_card(dealers_cards)
-# display_players_cards(players_cards)
-
-# players_starting_total = inital_total!(players_cards, PLAYERS_KEY, totals)
-# dealers_starting_total = inital_total!(dealers_cards, DEALERS_KEY, totals)
 
 loop do
 
   welcome_messages
+
+  # variable assignment
+  deck = initalize_deck
 
   players_cards = deal_cards!(deck)
   dealers_cards = deal_cards!(deck)
@@ -149,44 +140,52 @@ loop do
 
   loop do
 
-    player_choice = nil
+    players_choice = ''
 
     loop do
       prompt("Choose hit or stay")
-      player_choice = gets.chomp.downcase
-      break if ['hit', 'stay'].include?(player_choice)
+      players_choice = gets.chomp.downcase
+      break if ['hit', 'stay'].include?(players_choice)
       prompt "Sorry, must enter 'hit' or 'stay'"
     end
 
-    if player_choice == 'hit'
-      hit!(deck, PLAYERS_KEY, totals)
-    end
-
-    break if player_choice = 'stay' || (totals[PLAYERS_KEY] > 21)
-  end
-
-  if totals[PLAYERS_KEY] > 21
-    prompt("Sorry, your total went over 21. Dealer wins!")
-    loop do
-      prompt("Do you want to play again? Type 'y' if yes")
-      answer = gets.chomp
-      if answer == 'y'
-        next
-      elsif answer == 'n'
+    if players_choice == 'hit'
+      card = deck.pop
+      players_cards << card
+      update_total!(card, PLAYERS_KEY, totals)
+      if totals[PLAYERS_KEY] > 21
+        prompt("Sorry, you're total is over 21. Dealer wins!")
         break
+      else
+        prompt("Your cards are #{players_cards} and total is #{totals[PLAYERS_KEY]}")
       end
     end
-  else
-    prompt "You chose to stay!"
+
+    if players_choice == 'stay'
+      prompt("You chose to stay")
+      break
+    end
+
+    break if totals[PLAYERS_KEY] > 21
   end
-
-
-  loop do
-    break if totals[DEALERS_KEY] >= 17
-    hit!(deck, DEALERS_KEY, totals)
-  end
-
 end
+
+#   prompt("Dealers turn now...")
+
+#   loop do
+#     break if totals[DEALERS_KEY] >= 17
+#     card = deck.pop
+#     dealers_cards << card
+#     update_total!(card, DEALERS_KEY, totals)
+#   end
+
+
+#   if totals[DEALERS_KEY] > 21
+#     prompt("Dealer is over 21. Player wins!")
+#     break
+#   end
+
+# end
 
 p players_cards
 p dealers_cards
