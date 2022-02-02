@@ -102,17 +102,17 @@ def inital_total!(cards, current_player_key, totals)
   totals[current_player_key]
 end
 
-def hit!(deck, totals)
+def hit!(deck, current_player_key, totals)
   card = deck.pop
-
-  if card[1] == 'A' && totals[PLAYERS_KEY] > 21
-    totals[PLAYERS_KEY] += 1
-  elsif card[1] == 'A' && totals[PLAYERS_KEY] <= 21
-    totals[PLAYERS_KEY] += 11
+  p card
+  if card[1] == 'A' && totals[current_player_key] > 21
+    totals[current_player_key] += 1
+  elsif card[1] == 'A' && totals[current_player_key] <= 21
+    totals[current_player_key] += 11
   elsif card[1].to_i == 0
-    totals[PLAYERS_KEY] += 10
+    totals[current_player_key] += 10
   else
-    totals[PLAYERS_KEY] += card[1].to_i
+    totals[current_player_key] += card[1].to_i
   end
 
   totals
@@ -125,39 +125,70 @@ end
 totals = initalize_totals
 deck = initalize_deck
 
-players_cards = deal_cards!(deck)
-dealers_cards = deal_cards!(deck)
+# players_cards = deal_cards!(deck)
+# dealers_cards = deal_cards!(deck)
 
-display_dealers_card(dealers_cards)
-display_players_cards(players_cards)
+# display_dealers_card(dealers_cards)
+# display_players_cards(players_cards)
 
-players_starting_total = inital_total!(players_cards, PLAYERS_KEY, totals)
-dealers_starting_total = inital_total!(dealers_cards, DEALERS_KEY, totals)
+# players_starting_total = inital_total!(players_cards, PLAYERS_KEY, totals)
+# dealers_starting_total = inital_total!(dealers_cards, DEALERS_KEY, totals)
 
 loop do
-  player_choice = nil
+
+  welcome_messages
+
+  players_cards = deal_cards!(deck)
+  dealers_cards = deal_cards!(deck)
+
+  display_players_cards(players_cards)
+  display_dealers_card(dealers_cards)
+
+  players_starting_total = inital_total!(players_cards, PLAYERS_KEY, totals)
+  dealers_starting_total = inital_total!(dealers_cards, DEALERS_KEY, totals)
 
   loop do
-    prompt("Choose hit or stay")
-    player_choice = gets.chomp.downcase
-    break if ['hit', 'stay'].include?(player_choice)
-    prompt "Sorry, must enter 'hit' or 'stay'"
-  end
 
-  if player_choice == 'hit'
-    hit!(deck, totals)
-  end
+    player_choice = nil
 
-  if player_choice == 'stay'
-    prompt("You have chosen stay!")
-    break
+    loop do
+      prompt("Choose hit or stay")
+      player_choice = gets.chomp.downcase
+      break if ['hit', 'stay'].include?(player_choice)
+      prompt "Sorry, must enter 'hit' or 'stay'"
+    end
+
+    if player_choice == 'hit'
+      hit!(deck, PLAYERS_KEY, totals)
+    end
+
+    break if player_choice = 'stay' || (totals[PLAYERS_KEY] > 21)
   end
 
   if totals[PLAYERS_KEY] > 21
     prompt("Sorry, your total went over 21. Dealer wins!")
-    break
+    loop do
+      prompt("Do you want to play again? Type 'y' if yes")
+      answer = gets.chomp
+      if answer == 'y'
+        next
+      elsif answer == 'n'
+        break
+      end
+    end
+  else
+    prompt "You chose to stay!"
+  end
+
+
+  loop do
+    break if totals[DEALERS_KEY] >= 17
+    hit!(deck, DEALERS_KEY, totals)
   end
 
 end
 
-loop do
+p players_cards
+p dealers_cards
+
+p totals
