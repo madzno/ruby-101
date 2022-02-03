@@ -118,15 +118,34 @@ def update_total!(card, current_player_key, totals)
   totals
 end
 
-def busted?(totals)
-  totals[PLAYERS_KEY] > 21
+def get_players_choice
+  players_choice = ''
+    loop do
+      prompt("Choose hit or stay")
+      players_choice = gets.chomp.downcase
+      break if ['hit', 'stay'].include?(players_choice)
+      prompt "Sorry, must enter 'hit' or 'stay'"
+    end
+  players_choice
+end
+
+def hit!(deck, players_cards, totals)
+  card = deck.pop
+  players_cards << card
+  update_total!(card, PLAYERS_KEY, totals)
+end
+
+def busted?(totals, current_player_key)
+  totals[current_player_key] > 21
+end
+
+def play_again?()
 end
 
 loop do
 
   welcome_messages
 
-  # variable assignment
   deck = initalize_deck
   totals = initalize_totals
 
@@ -141,20 +160,11 @@ loop do
 
   loop do
 
-    players_choice = ''
-
-    loop do
-      prompt("Choose hit or stay")
-      players_choice = gets.chomp.downcase
-      break if ['hit', 'stay'].include?(players_choice)
-      prompt "Sorry, must enter 'hit' or 'stay'"
-    end
+    players_choice = get_players_choice
 
     if players_choice == 'hit'
-      card = deck.pop
-      players_cards << card
-      update_total!(card, PLAYERS_KEY, totals)
-      if totals[PLAYERS_KEY] > 21
+      hit!(deck, players_cards, totals)
+      if busted?(totals, PLAYERS_KEY)
         prompt("Sorry, your cards are #{players_cards} and total is over 21. Dealer wins!")
         break
       else
@@ -167,10 +177,10 @@ loop do
       break
     end
 
-    break if totals[PLAYERS_KEY] > 21
+    break if busted?(totals, current_player_key)
   end
 
-  if totals[PLAYERS_KEY] > 21
+  if busted?(totals, current_player_key)
     prompt("Play again? Type 'yes' or 'no'")
     answer = gets.chomp.downcase
     if answer.downcase.start_with?('y')
