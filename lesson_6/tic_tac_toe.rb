@@ -165,19 +165,29 @@ def round_over?(brd)
   round_won?(brd) || board_full?(brd)
 end
 
-def play_game!(board, first_player)
+def play_game!(board, player)
   loop do
-    if first_player == 'user'
+    if player == 'user'
       display_board(board)
       player_places_piece!(board)
       computer_places_piece!(board)
+      display_board(board)
       break if round_over?(board)
-    elsif first_player == 'computer'
+    elsif player == 'computer'
       computer_places_piece!(board)
       display_board(board)
       break if round_over?(board)
       player_places_piece!(board)
+      display_board(board)
     end
+  end
+end
+
+def alternate_player(current_player)
+  if current_player == 'user'
+    current_player = 'computer'
+  elsif current_player == 'computer'
+    current_player = 'user'
   end
 end
 
@@ -215,9 +225,14 @@ def display_ultimate_winner(score)
 end
 
 def play_again?
-  prompt(MESSAGES['play_again'])
-  answer = gets.chomp
-  answer.start_with?('y')
+answer = ''
+  loop do
+    prompt(MESSAGES['play_again'])
+    answer = gets.chomp.downcase
+    break if ['n', 'no', 'y', 'yes'].include?(answer)
+    prompt(MESSAGES['valid_choice'])
+  end
+  ['yes', 'y'].include?(answer)
 end
 
 # welcome messages
@@ -228,16 +243,18 @@ prompt("First player to win #{MAX_SCORE} rounds is the Ultimate Winner!")
 # main loop
 loop do
   score = initalize_score
-  first_player = choose_first_player
+  current_player = choose_first_player
   system 'clear'
 
   # round of 5 games
   loop do
     board = initalize_board
 
-    sleep(1)
+    sleep(3)
 
-    play_game!(board, first_player)
+    play_game!(board, current_player)
+
+    current_player = alternate_player(current_player)
 
     update_score(detect_round_winner(board), score)
 
