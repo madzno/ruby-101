@@ -103,10 +103,12 @@ def inital_total!(cards, current_player_key, totals)
 end
 
 def update_total!(card, current_player_key, totals)
-  if card[1] == 'A' && totals[current_player_key] > 21
-    totals[current_player_key] += 1
-  elsif card[1] == 'A' && totals[current_player_key] <= 21
+
+  if card[1] == 'A'
     totals[current_player_key] += 11
+    if totals[current_player_key] > 21
+      totals[current_player_key] -=10
+    end
   elsif card[1].to_i == 0
     totals[current_player_key] += 10
   else
@@ -120,14 +122,13 @@ def busted?(totals)
   totals[PLAYERS_KEY] > 21
 end
 
-totals = initalize_totals
-
 loop do
 
   welcome_messages
 
   # variable assignment
   deck = initalize_deck
+  totals = initalize_totals
 
   players_cards = deal_cards!(deck)
   dealers_cards = deal_cards!(deck)
@@ -154,7 +155,7 @@ loop do
       players_cards << card
       update_total!(card, PLAYERS_KEY, totals)
       if totals[PLAYERS_KEY] > 21
-        prompt("Sorry, you're total is over 21. Dealer wins!")
+        prompt("Sorry, your cards are #{players_cards} and total is over 21. Dealer wins!")
         break
       else
         prompt("Your cards are #{players_cards} and total is #{totals[PLAYERS_KEY]}")
@@ -168,26 +169,53 @@ loop do
 
     break if totals[PLAYERS_KEY] > 21
   end
+
+  if totals[PLAYERS_KEY] > 21
+    prompt("Play again? Type 'yes' or 'no'")
+    answer = gets.chomp.downcase
+    if answer.downcase.start_with?('y')
+      next
+    elsif answer.downcase.start_with?('n')
+      break
+    end
+  end
+
+  prompt("Dealer's turn now...")
+
+  loop do
+    break if totals[DEALERS_KEY] >= 17
+    card = deck.pop
+    dealers_cards << card
+    update_total!(card, DEALERS_KEY, totals)
+  end
+
+  if totals[DEALERS_KEY] > 21
+    prompt("Dealer's cards are #{dealers_cards} and are over 21. Player wins!")
+    prompt("Play again? Type 'yes' or 'no'")
+    answer = gets.chomp.downcase
+    if answer.downcase.start_with?('y')
+      next
+    elsif answer.downcase.start_with?('n')
+      break
+    end
+  end
+
+  prompt("Dealer's cards are #{dealers_cards} and total is #{totals[DEALERS_KEY]}")
+  prompt("Player's cards are #{players_cards} and total is #{totals[PLAYERS_KEY]}")
+  if totals[DEALERS_KEY] > totals[PLAYERS_KEY]
+    prompt("Dealer Won!")
+  elsif totals[PLAYERS_KEY] > totals[DEALERS_KEY]
+    prompt("Player Won!")
+  else
+    prompt("It's a Tie!")
+  end
+
+  prompt("Play again? Type 'yes' or 'no'")
+  answer = gets.chomp.downcase
+  break unless answer.downcase.start_with?('y')
 end
 
-#   prompt("Dealers turn now...")
-
-#   loop do
-#     break if totals[DEALERS_KEY] >= 17
-#     card = deck.pop
-#     dealers_cards << card
-#     update_total!(card, DEALERS_KEY, totals)
-#   end
+prompt("Thanks for playing twenty-one, Goodbye!")
 
 
-#   if totals[DEALERS_KEY] > 21
-#     prompt("Dealer is over 21. Player wins!")
-#     break
-#   end
 
-# end
-
-p players_cards
-p dealers_cards
-
-p totals

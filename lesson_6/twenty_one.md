@@ -61,6 +61,14 @@ everything after
 overall loop to the good bye messages
 
 ..- display the results
-..-
+..- display dealers cards are : and total is:
+..- display players cards are : and total is:
+..- if dealers totals > players totals
+..- dealer wins!
+...-else
+...- player wins!
+..-end
+
+..play again?
 
 
