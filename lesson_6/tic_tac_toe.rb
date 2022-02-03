@@ -81,12 +81,17 @@ def choose_first_player
   end
 end
 
+def valid_integer?(players_choice)
+  players_choice == players_choice.to_i.to_s
+end
+
 def player_places_piece!(brd)
   square = ''
   loop do
     prompt("Choose a square (#{joinor(empty_squares(brd))}):")
-    square = gets.chomp.to_i
-    if empty_squares(brd).include?(square)
+    square = gets.chomp
+    if empty_squares(brd).include?(square.to_i) && valid_integer?(square)
+      square = square.to_i
       break
     else
       prompt(MESSAGES['valid_choice'])
@@ -212,7 +217,7 @@ end
 def play_again?
   prompt(MESSAGES['play_again'])
   answer = gets.chomp
-  return true if answer.start_with?('y')
+  answer.start_with?('y')
 end
 
 # welcome messages
