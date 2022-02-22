@@ -139,7 +139,10 @@ def busted?(totals, current_player_key)
   totals[current_player_key] > 21
 end
 
-def play_again?()
+def play_again?
+  prompt("Play again? Type 'yes' or 'no'")
+  answer = gets.chomp.downcase
+  return true if ['y', 'yes', 'Y', 'Yes'].include?(answer)
 end
 
 loop do
@@ -177,10 +180,10 @@ loop do
       break
     end
 
-    break if busted?(totals, current_player_key)
+    break if busted?(totals, PLAYERS_KEY)
   end
 
-  if busted?(totals, current_player_key)
+  if busted?(totals, PLAYERS_KEY)
     prompt("Play again? Type 'yes' or 'no'")
     answer = gets.chomp.downcase
     if answer.downcase.start_with?('y')
